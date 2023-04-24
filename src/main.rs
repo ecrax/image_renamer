@@ -5,7 +5,6 @@ fn main() {
     let folder = args.nth(1).expect("USAGE: image_renamer <folder> [yes]");
     let confirm = args.next().unwrap_or("no".to_string());
     println!("confirm: {}", confirm);
-
     println!("folder: {}", folder);
 
     let paths = std::fs::read_dir(folder).expect("folder not found");
@@ -75,7 +74,14 @@ fn main() {
         let file_path = path.parent().unwrap().join(&file_name);
 
         if confirm == "yes" {
-            fs::rename(&path, &file_path).expect(format!("cannot rename file {} -> {}", path.display(), file_path.as_path().display()).as_str());
+            fs::rename(&path, &file_path).expect(
+                format!(
+                    "cannot rename file {} -> {}",
+                    path.display(),
+                    file_path.as_path().display()
+                )
+                .as_str(),
+            );
             println!("renaming: {} -> {file_name}", path.display());
         } else {
             println!("{} -> {file_name}", path.display());
