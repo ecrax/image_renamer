@@ -2,8 +2,8 @@ use std::{env::args, fs};
 
 fn main() {
     let mut args = args();
-    let folder = args.nth(1).expect("please pass a folder");
-    let confirm = args.nth(0).unwrap_or("no".to_string());
+    let folder = args.nth(1).expect("USAGE: image_renamer <folder> [yes]");
+    let confirm = args.next().unwrap_or("no".to_string());
     println!("confirm: {}", confirm);
 
     println!("folder: {}", folder);
