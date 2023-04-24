@@ -10,7 +10,6 @@ fn main() {
     let paths = std::fs::read_dir(folder).expect("folder not found");
     for path in paths {
         let path = path.expect("path not found").path();
-        //println!("path: {:?}", path);
         if path
             .extension()
             .unwrap()
@@ -33,6 +32,11 @@ fn main() {
 
         let date = exif
             .get_field(exif::Tag::DateTime, exif::In::PRIMARY)
+            .unwrap()
+            .display_value()
+            .with_unit(&exif);
+        let camera = exif
+            .get_field(exif::Tag::Model, exif::In::PRIMARY)
             .unwrap()
             .display_value()
             .with_unit(&exif);
@@ -63,13 +67,14 @@ fn main() {
             .with_unit(&exif);
 
         let file_name = format!(
-            "{}__{}_{}_{}_{}_ISO{}.jpg",
+            "{}__{}_{}_{}_{}_ISO{}_{}.jpg",
             date.to_string().replace(" ", "_"),
             mode.to_string().replace(" ", "-"),
             aperture.to_string().replace("/", ""),
             focal_length.to_string().replace(" ", ""),
             shutter_speed.to_string().replace(" ", "").replace("/", "T"),
-            iso
+            iso,
+            camera.to_string().replace('"', "").replace(' ', "-")
         );
         let file_path = path.parent().unwrap().join(&file_name);
 
