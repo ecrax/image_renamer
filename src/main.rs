@@ -1,13 +1,19 @@
 use std::{env::args, fs};
 
-fn main() {
+fn main() -> color_eyre::Result<()> {
     let mut args = args();
-    let folder = args.nth(1).expect("USAGE: image_renamer <folder> [yes]");
+
+    if args.len() < 2 {
+        println!("USAGE: image_renamer <folder> [yes]");
+        return Ok(());
+    }
+
+    let folder = args.nth(1).unwrap();
     let confirm = args.next().unwrap_or("no".to_string());
     println!("confirm: {}", confirm);
     println!("folder: {}", folder);
 
-    let paths = std::fs::read_dir(folder).expect("folder not found");
+    let paths = std::fs::read_dir(folder)?;
     for path in paths {
         let path = path.expect("path not found").path();
         if path
@@ -20,10 +26,10 @@ fn main() {
         {
             continue;
         }
-        let file = std::fs::File::open(&path).unwrap();
+        let file = std::fs::File::open(&path)?;
         let mut bufreader = std::io::BufReader::new(&file);
         let exifreader = exif::Reader::new();
-        let exif = exifreader.read_from_container(&mut bufreader).unwrap();
+        let exif = exifreader.read_from_container(&mut bufreader)?;
 
         // for f in exif.fields() {
         //     println!("{} {} {}",
@@ -92,4 +98,6 @@ fn main() {
             println!("{} -> {file_name}", path.display());
         }
     }
+
+    Ok(())
 }
