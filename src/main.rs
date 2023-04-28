@@ -72,14 +72,23 @@ fn main() -> color_eyre::Result<()> {
             .display_value()
             .with_unit(&exif);
 
+        let white_balance = exif
+            .get_field(exif::Tag::WhiteBalance, exif::In::PRIMARY)
+            .unwrap()
+            .display_value()
+            .with_unit(&exif);
+
+        //TODO: make this configurable
+
         let file_name = format!(
-            "{}__{}_{}_{}_{}_ISO{}_{}.jpg",
+            "{}__{}_{}_{}_{}_ISO{}_{}_{}.jpg",
             date.to_string().replace(" ", "_"),
             mode.to_string().replace(" ", "-"),
             aperture.to_string().replace("/", ""),
             focal_length.to_string().replace(" ", ""),
             shutter_speed.to_string().replace(" ", "").replace("/", "T"),
             iso,
+            white_balance.to_string().replace(" ", "-"),
             camera.to_string().replace('"', "").replace(' ', "-")
         );
         let file_path = path.parent().unwrap().join(&file_name);
